@@ -15,8 +15,8 @@ public class SocketServer  implements Runnable{
     @Override
     public void run() {
         try {
-            System.out.println("Listening for connection on port 8070 ....");
-            final ServerSocket server = new ServerSocket(8070);
+            System.out.println("Listening for connection on port 8778 ....");
+            final ServerSocket server = new ServerSocket(8778);
             // spin forever
 
             Socket connectionSocket = null;
