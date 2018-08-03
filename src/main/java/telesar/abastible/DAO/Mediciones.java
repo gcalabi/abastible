@@ -15,8 +15,18 @@ public class Mediciones {
 
     private double valor;
 
-    private Date timestamp;
+    private Date timestampMedicion;
 
+    private Date timestampRegistro;
+
+
+    public Date getTimestampRegistro() {
+        return timestampRegistro;
+    }
+
+    public void setTimestampRegistro(Date timestampRegistro) {
+        this.timestampRegistro = timestampRegistro;
+    }
 
     public String getiMei() {
         return iMei;
@@ -42,11 +52,11 @@ public class Mediciones {
         this.valor = valor;
     }
 
-    public Date getTimestamp() {
-        return timestamp;
+    public Date getTimestampMedicion() {
+        return timestampMedicion;
     }
 
-    public void setTimestamp(Date timestamp) {
-        this.timestamp = timestamp;
+    public void setTimestampMedicion(Date timestampMedicion) {
+        this.timestampMedicion = timestampMedicion;
     }
 }
