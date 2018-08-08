@@ -1,6 +1,10 @@
 package telesar.abastible.DAO;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -11,17 +15,23 @@ public class Mediciones {
 
     private String iMei;
 
-    private String idCliente;
+    private String serial;
 
     private double valor;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date timestampMedicion;
 
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    @Indexed
     private Date timestampRegistro;
 
 
-    public Date getTimestampRegistro() {
-        return timestampRegistro;
+    public String getTimestampRegistro() {
+        if (timestampRegistro != null)
+            return timestampRegistro.toString();
+        else
+            return null;
     }
 
     public void setTimestampRegistro(Date timestampRegistro) {
@@ -36,12 +46,12 @@ public class Mediciones {
         this.iMei = iMei;
     }
 
-    public String getIdCliente() {
-        return idCliente;
+    public String getSerial() {
+        return serial;
     }
 
-    public void setIdCliente(String idCliente) {
-        this.idCliente = idCliente;
+    public void setSerial(String serial) {
+        this.serial = serial;
     }
 
     public double getValor() {
@@ -52,8 +62,11 @@ public class Mediciones {
         this.valor = valor;
     }
 
-    public Date getTimestampMedicion() {
-        return timestampMedicion;
+    public String getTimestampMedicion() {
+        if (timestampMedicion != null)
+            return timestampMedicion.toString();
+        else
+            return null;
     }
 
     public void setTimestampMedicion(Date timestampMedicion) {

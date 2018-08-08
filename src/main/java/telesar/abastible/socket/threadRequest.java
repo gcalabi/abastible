@@ -5,6 +5,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 import telesar.abastible.datasource.MongoConnection;
+import telesar.abastible.model.Validations;
 import telesar.abastible.utils.Util;
 
 import java.io.BufferedReader;
@@ -36,50 +37,60 @@ public class threadRequest implements Runnable{
             String response;
 
             if (data != null && !data.isEmpty()) {
-                System.out.println("IP :" + clientSocket.getInetAddress() + " Mensaje : " + data);
 
-                // Msg example: 123456789123456789$180724185531&45
+                Validations validations = new Validations();
 
-                String ipCliente = clientSocket.getInetAddress().toString();
+                String errors = validations.validateData(data);
 
-                String iMei = data.split("\\$")[0];
-                String idCliente = " ";
-                String fechaHora = data.split("\\$")[1];
-                String valorSensor = data.split("\\$")[2];
-
-                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("CST"));
-
-                calendar.set(Integer.valueOf("20"+fechaHora.substring(0, 2)),Integer.valueOf(fechaHora.substring(2, 4)),Integer.valueOf(fechaHora.substring(4, 6)),Integer.valueOf(fechaHora.substring(6, 8)),Integer.valueOf(fechaHora.substring(8, 10)),Integer.valueOf(fechaHora.substring(10, 12)));
-
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-                MongoConnection mongoConenction = MongoConnection.getInstance();
-                MongoClient mongoClient = mongoConenction.getMongoClient();
-                MongoDatabase db = mongoClient.getDatabase("abastible");
-
-                MongoCollection logCollection = db.getCollection("logs");
-
-                Document logDocument = new Document();
-                logDocument.put("encriptedData", data);
-                logDocument.put("data", data);
-                logDocument.put("timestamp", timestamp);
+                if (errors.length() == 0) {
 
 
-                logCollection.insertOne(logDocument);
+                    System.out.println("IP :" + clientSocket.getInetAddress() + " Mensaje : " + data);
 
-                MongoCollection medicionesCollection = db.getCollection("mediciones");
+                    // Msg example: 123456789123456789$180724185531&45
 
-                Document medicionesDocument = new Document();
-                medicionesDocument.put("iMei", iMei);
-                medicionesDocument.put("idCliente", idCliente);
-                medicionesDocument.put("valor", valorSensor);
-                medicionesDocument.put("timestamp", timestamp);
+                    String ipCliente = clientSocket.getInetAddress().toString();
+
+                    String iMei = data.split("\\$")[0];
+                    String idCliente = " ";
+                    String fechaHora = data.split("\\$")[1];
+                    String valorSensor = data.split("\\$")[2];
+
+                    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("CST"));
+
+                    calendar.set(Integer.valueOf("20" + fechaHora.substring(0, 2)), Integer.valueOf(fechaHora.substring(2, 4)), Integer.valueOf(fechaHora.substring(4, 6)), Integer.valueOf(fechaHora.substring(6, 8)), Integer.valueOf(fechaHora.substring(8, 10)), Integer.valueOf(fechaHora.substring(10, 12)));
+
+                    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                    MongoConnection mongoConenction = MongoConnection.getInstance();
+                    MongoClient mongoClient = mongoConenction.getMongoClient();
+                    MongoDatabase db = mongoClient.getDatabase("abastible");
+
+                    MongoCollection logCollection = db.getCollection("logs");
+
+                    Document logDocument = new Document();
+                    logDocument.put("encriptedData", data);
+                    logDocument.put("data", data);
+                    logDocument.put("timestamp", timestamp);
 
 
-                medicionesCollection.insertOne(medicionesDocument);
+                    logCollection.insertOne(logDocument);
 
-                //mongoClient.close();
+                    MongoCollection medicionesCollection = db.getCollection("mediciones");
 
+                    Document medicionesDocument = new Document();
+                    medicionesDocument.put("iMei", iMei);
+                    medicionesDocument.put("idCliente", idCliente);
+                    medicionesDocument.put("valor", valorSensor);
+                    medicionesDocument.put("timestamp", timestamp);
+
+
+                    medicionesCollection.insertOne(medicionesDocument);
+
+                    //mongoClient.close();
+                } else {
+                    data = errors;
+                }
 
             } else {
                 data = "";

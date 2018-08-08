@@ -6,9 +6,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.util.Date;
 
 
-
-@Document(collection = "logs")
-public class Log {
+@Document(collection = "errorsLog")
+public class ErrorLog {
 
 
 
@@ -19,6 +18,25 @@ public class Log {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date timestamp;
 
+    private String errorMsg;
+
+    private String errorException;
+
+    public String getErrorMsg() {
+        return errorMsg;
+    }
+
+    public void setErrorMsg(String errorMsg) {
+        this.errorMsg = errorMsg;
+    }
+
+    public String getErrorException() {
+        return errorException;
+    }
+
+    public void setErrorException(String errorException) {
+        this.errorException = errorException;
+    }
 
     public String getEncriptedData() {
         return encriptedData;
