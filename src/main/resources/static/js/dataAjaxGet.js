@@ -12,9 +12,9 @@ $(document).ready(function() {
 					
 					var logRow = '<tr>' +
 					                    '<td>' + records.timestampRegistro + '</td>' +
-										'<td>' + records.timestampMedicion + '</td>' +
+										'<td>' + records.timestampMedicionFormatted + '</td>' +
 										'<td>' + records.serial + '</td>' +
-										'<td>' + records.iMei + '</td>' +
+										'<td>' + records.imei + '</td>' +
 										'<td>' + records.valor + '</td>' +
 									  '</tr>';
 					

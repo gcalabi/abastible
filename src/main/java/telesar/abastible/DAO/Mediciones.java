@@ -13,7 +13,7 @@ public class Mediciones {
 
 
 
-    private String iMei;
+    private String imei;
 
     private String serial;
 
@@ -38,12 +38,12 @@ public class Mediciones {
         this.timestampRegistro = timestampRegistro;
     }
 
-    public String getiMei() {
-        return iMei;
+    public String getImei() {
+        return imei;
     }
 
-    public void setiMei(String iMei) {
-        this.iMei = iMei;
+    public void setImei(String imei) {
+        this.imei = imei;
     }
 
     public String getSerial() {
@@ -62,7 +62,13 @@ public class Mediciones {
         this.valor = valor;
     }
 
-    public String getTimestampMedicion() {
+    public Date getTimestampMedicion() {
+
+            return timestampMedicion;
+
+    }
+
+    public String getTimestampMedicionFormatted() {
         if (timestampMedicion != null)
             return timestampMedicion.toString();
         else

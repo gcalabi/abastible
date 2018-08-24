@@ -4,10 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import telesar.abastible.DAO.ErrorLog;
 import telesar.abastible.DAO.Log;
 import telesar.abastible.DAO.Mediciones;
@@ -56,27 +53,40 @@ public class RestAPI {
     public List<Mediciones> getDataAll() {
 
 
-        return medicionesRepository.findAll();
+        return medicionesRepository.findAll(new Sort(Sort.Direction.DESC, "timestampRegistro"));
+    }
+
+    @RequestMapping("/getDataBySerial")
+    public List<Mediciones> getDataBySerial(HttpServletRequest request, @RequestParam(value = "serial", required = false) String serial, @RequestParam(value = "desde", required = false) String desde, @RequestParam(value = "hasta", required = false) String hasta, Model model) {
+
+
+        return medicionesRepository.findBySerial(serial, new Sort(Sort.Direction.DESC, "timestampRegistro"));
+    }
+
+
+
+    @RequestMapping("/getDataByImei")
+    public List<Mediciones> getDataByImei(HttpServletRequest request, @RequestParam(value = "imei", required = true) String imei, Model model) {
+
+        medicionesRepository.deleteAll();
+        logRepository.deleteAll();
+        errorsLogRepository.deleteAll();
+
+
+
+        return medicionesRepository.findByImei(imei, new Sort(Sort.Direction.DESC, "timestampRegistro"));
     }
 
     @RequestMapping("/getData")
     public List<Mediciones> getData(HttpServletRequest request, @RequestParam(value = "startDate", required = true) String startDate, @RequestParam(value = "endDate", required = true) String endDate, @RequestParam(value = "serial", required = false) String serial, Model model) {
 
 
-        return medicionesRepository.findAll(new Sort(Sort.Direction.ASC, "timestampRegistro"));
+        return medicionesRepository.findAll(new Sort(Sort.Direction.DESC, "timestampRegistro"));
     }
-
-
-
-
-
 
 
     @RequestMapping("/getLog")
     public List<Log> getLog(HttpServletRequest request, @RequestParam(value = "fechaInicio", required = false) String fechaInicio, @RequestParam(value = "fechaFin", required = false) String fechaFin, Model model) {
-
-
-
 
         return logRepository.findAll();
     }
@@ -90,6 +100,7 @@ public class RestAPI {
 
 //TODO: Agregar alertas ante algun error de recepcion de datos
     @RequestMapping("/data")
+    @PostMapping
     public String submitData(HttpServletRequest request, @RequestParam(value = "data", required = true, defaultValue = "") String data, Model model) throws Exception {
 
         // Msg example: [IMEI]$[FECHA HORA]$[Valor Sensor]
@@ -141,8 +152,8 @@ public class RestAPI {
 
             //Extraigo los valores de el mensaje(Parseo de el mensaje)
 
-            String iMei = data.split("\\$")[0];
-            String serialNumber = " ";
+            String imei = "";
+            String serialNumber = data.split("\\$")[0];
             String fechaHora = data.split("\\$")[1];
             String valorSensor = data.split("\\$")[2];
 
@@ -172,7 +183,7 @@ public class RestAPI {
             }
 
             medi.setSerial(serialNumber);
-            medi.setiMei(iMei);
+            medi.setImei(imei);
             medi.setValor(Double.parseDouble(valorSensor));
             medi.setTimestampMedicion(new Timestamp(calendar.getTimeInMillis()));
             medi.setTimestampRegistro(timestampActual);
@@ -182,7 +193,7 @@ public class RestAPI {
 
 
             //TODO: Definir con Daniel formato respuesta
-            return serialNumber + " " + fechaHora + " "+ iMei + " " + valorSensor ;
+            return serialNumber + " " + fechaHora + " "+ imei + " " + valorSensor ;
 
 
         } catch (Exception e) {
