@@ -88,14 +88,14 @@ public class RestAPI {
     @RequestMapping("/getLog")
     public List<Log> getLog(HttpServletRequest request, @RequestParam(value = "fechaInicio", required = false) String fechaInicio, @RequestParam(value = "fechaFin", required = false) String fechaFin, Model model) {
 
-        return logRepository.findAll();
+        return logRepository.findAll(new Sort(Sort.Direction.DESC, "timestamp"));
     }
 
     @RequestMapping("/getErrorLog")
     public List<ErrorLog> getErrorLog(HttpServletRequest request, @RequestParam(value = "fechaInicio", required = false) String fechaInicio, @RequestParam(value = "fechaFin", required = false) String fechaFin, Model model) {
 
 
-        return errorsLogRepository.findAll();
+        return errorsLogRepository.findAll(new Sort(Sort.Direction.DESC, "timestamp"));
     }
 
 //TODO: Agregar alertas ante algun error de recepcion de datos
